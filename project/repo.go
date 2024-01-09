@@ -43,7 +43,7 @@ func (r *Repo) ProcessEvents(events ...event.Event) {
 	r.mux.Unlock()
 }
 
-var ErrProjectNotFound = errors.New("project not found")
+var ErrNotFound = errors.New("project not found")
 
 func (r *Repo) Project(id uuid.UUID) (Project, error) {
 	r.mux.Lock()
@@ -51,7 +51,7 @@ func (r *Repo) Project(id uuid.UUID) (Project, error) {
 
 	p, ok := r.projects[id]
 	if !ok {
-		return Project{}, ErrProjectNotFound
+		return Project{}, ErrNotFound
 	}
 
 	return p.Project, nil
@@ -67,5 +67,5 @@ func (r *Repo) ProjectByName(name string) (Project, error) {
 		}
 	}
 
-	return Project{}, ErrProjectNotFound
+	return Project{}, ErrNotFound
 }
