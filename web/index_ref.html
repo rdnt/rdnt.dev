@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>rdnt.dev</title>
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+    <script src="https://unpkg.com/htmx.org/dist/ext/head-support.js"></script>
+    <style data-component="reset">
+        html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
+            margin: 0;
+            padding: 0;
+            border: 0;
+            font-size: 100%;
+            font: inherit;
+            vertical-align: baseline;
+        }
+
+        /* HTML5 display-role reset for older browsers */
+
+        article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section {
+            display: block;
+        }
+
+        input, select, textarea, button {
+            font-family: inherit;
+        }
+
+        ol, ul {
+            list-style: none;
+        }
+
+        blockquote, q {
+            quotes: none;
+        }
+
+        blockquote {
+            &:before, &:after {
+                content: none;
+            }
+        }
+
+        q {
+            &:before, &:after {
+                content: none;
+            }
+        }
+
+        table {
+            border-collapse: collapse;
+            border-spacing: 0;
+        }
+
+        /
+        /
+        *:focus {
+        / / outline: none;
+        / /
+        }
+
+        *:focus, *:focus-visible {
+            outline: 0;
+        }
+
+        *:active {
+            -webkit-tap-highlight-color: transparent;
+        }
+    </style>
+    <style data-component="main">
+        /*$header-height: 140px;*/
+        /*$max-width: 1280px;*/
+
+        /*$text-color: #7a7b8a;*/
+        /*$accent-color: #20e9b7;*/
+        /*$link-color: #dadfe8;*/
+        /*$line-height: 1.5;*/
+        /*$newline-color: #333643;*/
+
+
+        html, body {
+            font-size: 1rem;
+            background: #000;
+        }
+
+        body {
+            overflow-y: auto;
+        }
+
+        #app {
+            font-family: 'Hack', monospace;
+            font-weight: normal;
+            font-size: 1rem;
+            display: flex;
+            color: #7a7b8a;
+            flex-direction: column;
+            line-height: 1.4;
+            background-color: #171b21;
+            min-height: 100vh;
+        }
+
+        main {
+            position: relative;
+            flex-grow: 1;
+            box-sizing: border-box;
+            overflow-y: auto;
+        }
+
+        /*#content {*/
+        /*    display: flex;*/
+        /*    flex-direction: column;*/
+        /*}*/
+
+        .container {
+            position: relative;
+            max-width: 1280px;
+            margin: 0 auto;
+            box-sizing: border-box;
+        }
+
+
+        ::-webkit-scrollbar {
+            width: 22px;
+            background-color: #171b21;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            border-radius: 10px;
+            background-color: #272c33;
+            background-clip: content-box;
+            border: 8px solid transparent;
+        }
+    </style>
+    <style data-component="header">
+        #header {
+            position: relative;
+            overflow: hidden;
+            width: 100%;
+            height: 140px;
+            user-select: none;
+        }
+
+        #header .inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: relative;
+            padding: 0 40px;
+            box-sizing: border-box;
+            max-width: 1280px;
+            height: 100%;
+            margin: 0 auto;
+        }
+
+        #header .inner .logo {
+            position: relative;
+            width: auto;
+            height: 40px;
+            display: inline-block;
+            padding: 30px 0;
+            opacity: 0.9;
+            transition: opacity 0.1s ease, background-color 0.2s ease;
+            z-index: 1001;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        #header .inner .logo:hover {
+            opacity: 1;
+        }
+
+        #header .inner .logo img {
+            position: relative;
+            display: block;
+            height: 100%;
+            transition: filter 0.1s ease 0.35s;
+        }
+
+        #header .inner nav {
+            height: 50px;
+            display: block;
+            z-index: 1000;
+            top: 0;
+            right: 40px;
+        }
+
+        #header .inner nav .navigation {
+            height: 50px;
+        }
+
+        #header .inner nav .navigation li {
+            float: left;
+            margin-left: 50px;
+        }
+
+        #header .inner nav .navigation li:first-child {
+            margin-left: 0;
+        }
+
+        #header .inner nav .navigation li a {
+            display: block;
+            user-select: none;
+            width: auto;
+            padding: 10px 0;
+            text-decoration: none;
+            color: rgba(131, 134, 160, .8);
+            transition: opacity 0.3s ease, color 0.1s ease;
+            border-radius: 4px;
+        }
+
+        #header .inner nav .navigation li a:hover {
+            color: #8386a0;
+        }
+
+        #header .inner nav .navigation li a:active {
+            transform: translateY(1px);
+            color: rgba(131, 134, 160, .8);
+            transition: opacity 0.3s ease, color 0.1s ease;
+        }
+
+        #header .inner nav .navigation li a span {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 30px;
+            font-size: 1.2rem;
+        }
+
+        #header .inner nav .navigation li.active a {
+            opacity: 1;
+            color: #20e9b7;
+        }
+
+        #header .inner nav .navigation .theme-switch.hidden {
+            display: none;
+        }
+
+        #header .inner nav .navigation .theme-switch a {
+            padding: 0;
+        }
+
+        #header .inner nav .navigation .theme-switch a:active {
+            background-color: rgba(221, 221, 255, .05);
+            transition: opacity 0.3s ease, color 0.1s ease, background-color 0s;
+        }
+
+        #header .inner nav .navigation .theme-switch a span {
+            position: relative;
+            height: 50px;
+            width: 50px;
+            overflow: hidden;
+        }
+
+        #header .inner nav .navigation .theme-switch a span img {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            height: 30px;
+            width: 30px;
+            transform: translateY(-150%) scale(0.8);
+            animation: hide 1s ease;
+            transform-origin: center;
+        }
+
+        @keyframes hide {
+            0% {
+                transform: translateY(0) scale(0.8) rotate(0deg);
+                opacity: 1;
+                transform-origin: center;
+            }
+            100% {
+                transform: translate(150%, 100%) scale(0.8) rotate(30deg);
+                opacity: 0;
+                transform-origin: left;
+            }
+        }
+
+        #header .inner nav .navigation .theme-switch a span img.show {
+            transform: translateY(0) scale(0.8);
+            animation: show 1s ease;
+            transform-origin: center;
+        }
+
+        @keyframes show {
+            0% {
+                transform: translate(-150%, 100%) scale(0.8) rotate(-30deg);
+                opacity: 0;
+                transform-origin: right;
+            }
+            100% {
+                transform: translateY(0) scale(0.8) rotate(0deg);
+                opacity: 1;
+                transform-origin: center;
+            }
+        }
+
+    </style>
+    <style data-component="footer">
+        #footer {
+            background: #121519;
+            user-select: none;
+            justify-self: flex-end;
+            width: 100%;
+
+            .container {
+                display: flex;
+                flex-direction: row;
+                padding: 120px 40px;
+            }
+
+            .tab {
+                flex-direction: column;
+                flex-wrap: nowrap;
+                align-items: flex-start;
+                justify-content: space-between;
+                box-sizing: border-box;
+                flex-basis: 50%;
+            }
+
+            .tab .header {
+                position: relative;
+                font-size: 1.8rem;
+                color: #c2c4cc;
+                margin-bottom: 10px;
+            }
+
+            .source .details {
+                font-size: 1rem;
+                color: #7a7b8a;
+                user-select: text;
+            }
+
+            .social {
+                display: flex;
+                align-items: flex-end;
+            }
+
+            .social .icons {
+                height: 50px;
+                display: flex;
+                flex-wrap: wrap;
+            }
+
+            .social .icons .icon {
+                display: flex;
+                align-items: center;
+                font-size: 40px;
+                height: 40px;
+                width: 40px;
+                padding: 5px;
+                text-decoration: none;
+                margin: 0 15px 0 0;
+            }
+
+            .social .icons .icon:last-child {
+                margin: 0;
+            }
+        }
+    </style>
+    <style data-component="icons">
+        @font-face {
+            font-family: 'icons';
+            src:  url('/assets/fonts/icons/icons.eot?ww7m0k');
+            src:  url('/assets/fonts/icons/icons.eot?ww7m0k#iefix') format('embedded-opentype'),
+            url('/assets/fonts/icons/icons.ttf?ww7m0k') format('truetype'),
+            url('/assets/fonts/icons/icons.woff?ww7m0k') format('woff'),
+            url('/assets/fonts/icons/icons.svg?ww7m0k#icons') format('svg');
+            font-weight: normal;
+            font-style: normal;
+            font-display: block;
+        }
+
+        .icon {
+            position: relative;
+            &:before {
+                font-family: 'icons' !important;
+                line-height: 1;
+                font-style: normal;
+                font-weight: normal;
+                font-variant: normal;
+                text-transform: none;
+            }
+            &.github {
+                &:before {
+                    content: "\e900";
+                }
+            }
+            &.instagram {
+                &:before {
+                    content: "\e901";
+                }
+            }
+            &.linkedin {
+                &:before {
+                    content: "\e902";
+                }
+            }
+            &.mixcloud {
+                &:before {
+                    content: "\e903";
+                }
+            }
+            &.soundcloud {
+                &:before {
+                    content: "\e904";
+                }
+            }
+            &.arrow-left {
+                &:before {
+                    content: "\e905";
+                }
+            }
+            &.arrow-right {
+                &:before {
+                    content: "\e906";
+                }
+            }
+        }
+    </style>
+    <style data-component="home">
+        #intro-section {
+            min-height: 50vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            box-sizing: border-box;
+            padding: 100px 40px;
+            opacity: 0;
+        }
+        #intro-section.show {
+            transition: opacity 0.3s ease;
+            opacity: 1;
+        }
+        #intro-section .hello {
+            display: block;
+            font-size: 4rem;
+            color: #dadfe8;
+        }
+        #intro-section .hello .fade {
+            color: #333643;
+        }
+        #intro-section .introduction {
+            font-size: 1rem;
+            color: #7a7b8a;
+            user-select: text;
+        }
+
+    </style>
+    <style data-component="link">
+        .link, .markdown a, a {
+            position: relative;
+            display: inline;
+            background-color: transparent;
+            color: #cad1de;
+            z-index: 0;
+            transition: background-color 0.2s ease, color 0.2s ease, text-decoration-color 0.2s ease, text-decoration-color 0.2s ease;
+            box-sizing: content-box;
+            text-decoration: none;
+            text-decoration-color: rgba(202, 209, 222, .6);
+        }
+        .link:hover, .markdown a:hover, a:hover {
+            color: rgba(32, 233, 183, 1);
+            text-decoration-color: rgba(22, 218, 169, .7);
+        }
+        .link:active, .markdown a:active, a:active {
+            color: rgba(32, 233, 183, .8);
+            text-decoration-color: rgba(22, 218, 169, .5);
+        }
+        .link span, .markdown a span, a span {
+            display: inline-block;
+            line-height: 50px;
+        }
+
+    </style>
+</head>
+<body>
+<div id="app">
+    <div id="header">
+        <div class="inner">
+            <a class="logo" href="/"
+               hx-push-url="/"
+               hx-get="/views/home.html"
+               hx-swap="innerHTML"
+               hx-target="#content">
+                <img alt="" src="assets/images/logo.png"/>
+                <!-- <div class="trail"></div> -->
+            </a>
+
+            <nav>
+                <ul class="navigation">
+                    <li class="active">
+                        <a href="/"
+                           hx-push-url="/"
+                           hx-get="/views/home.html"
+                           hx-swap="innerHTML"
+                           hx-target="#content">
+                            <span>
+                              Home
+                            </span>
+                        </a>
+                    </li>
+                    <li class="active">
+                        <a href="/blog"
+                           hx-push-url="/blog"
+                           hx-get="/views/blog.html"
+                           hx-swap="innerHTML"
+                           hx-target="#content">
+                            <span>
+                                Blog
+                            </span>
+                        </a>
+                    </li>
+                    <li class="active">
+                        <a href="/projects"
+                           hx-push-url="/projects"
+                           hx-get="/views/projects.html"
+                           hx-swap="innerHTML"
+                           hx-target="#content">
+                            <span>
+                              Projects
+                            </span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+
+    <main id="content">
+        <div class="container">
+            <div id="intro-section" class="show">
+                <div class="hello newline show">Hello there.</div>
+                <div class="introduction show">
+                    <br />
+                    <p>
+                        My name is Tasos, and I am a Software Engineer based in
+                        Thessaloniki, Greece.<br />This is my home sweet home on the
+                        interwebs, where I share my projects, thoughts and experiments with
+                        the world.
+                    </p>
+                    <br />
+                    <p>
+                        In my free time I like coding small projects, contributing to the
+                        open source community and experimenting with new technologies. I
+                        also game (a lot, maybe too much!) and I make music mixes from time
+                        to time, among other things.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <div id="footer">
+        <div class="container">
+            <div class="source tab">
+                <div class="header">
+                    Source
+                </div>
+                <div class="details">
+                    The source code of my website is available on
+                    <a
+                            class="link"
+                            href="https://github.com/rdnt/rdnt.dev"
+                            target="_blank"
+                    >GitHub</a
+                    >.
+                </div>
+            </div>
+            <div class="social tab">
+                <div class="header">
+                    Social
+                </div>
+                <div class="icons">
+                    <a
+                            class="link icon github"
+                            href="https://github.com/rdnt"
+                            target="_blank"
+                    ></a>
+                    <a
+                            class="link icon instagram"
+                            href="https://www.instagram.com/rdntdev/"
+                            target="_blank"
+                    ></a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

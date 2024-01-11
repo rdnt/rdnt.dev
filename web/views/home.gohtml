@@ -1,33 +1,4 @@
-<head>
-    <style data-component="home">
-        #intro-section {
-            min-height: 50vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            box-sizing: border-box;
-            padding: 100px 40px;
-            opacity: 0;
-        }
-        #intro-section.show {
-            transition: opacity 0.3s ease;
-            opacity: 1;
-        }
-        #intro-section .hello {
-            display: block;
-            font-size: 4rem;
-            color: #dadfe8;
-        }
-        #intro-section .hello .fade {
-            color: #333643;
-        }
-        #intro-section .introduction {
-            font-size: 1rem;
-            color: #7a7b8a;
-            user-select: text;
-        }
-    </style>
-</head>
+{{define "views/home"}}
 <div class="container">
     <div id="intro-section" class="show">
         <div class="hello newline show">Hello there.</div>
@@ -49,3 +20,4 @@
         </div>
     </div>
 </div>
+{{end}}

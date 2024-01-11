@@ -1,0 +1,52 @@
+{{define "header"}}
+    <div id="header">
+        <div class="inner">
+            <a class="logo" href="/"
+               hx-push-url="/"
+               hx-get="/partials/home"
+               hx-swap="innerHTML"
+               hx-target="#content">
+                <img alt="" src="assets/images/logo.png"/>
+                <div class="trail"></div>
+            </a>
+
+            <nav>
+                <ul class="navigation">
+                    <li class="active">
+                        <a href="/"
+                           hx-push-url="/"
+                           hx-get="/partials/home"
+                           hx-swap="innerHTML"
+                           hx-target="#content">
+                                <span>
+                                  Home
+                                </span>
+                        </a>
+                    </li>
+                    <li class="active">
+                        <a href="/blog"
+                           hx-push-url="/blog"
+                           hx-get="/partials/blog"
+                           hx-swap="innerHTML"
+                           hx-target="#content">
+                                <span>
+                                    Blog
+                                </span>
+                        </a>
+                    </li>
+                    <li class="active">
+                        <a href="/projects"
+                           hx-push-url="/projects"
+                           hx-get="/partials/projects"
+                           hx-swap="innerHTML"
+                           hx-target="#content">
+                                <span>
+                                  Projects
+                                </span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+{{end}}

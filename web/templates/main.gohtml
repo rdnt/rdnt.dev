@@ -1,10 +1,11 @@
-<!DOCTYPE html>
+{{define "templates/main"}}<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>rdnt.dev</title>
     <script src="https://unpkg.com/htmx.org@1.9.10"></script>
     <script src="https://unpkg.com/htmx.org/dist/ext/head-support.js"></script>
+
     <style data-component="reset">
         html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
             margin: 0;
@@ -470,120 +471,27 @@
         }
 
     </style>
+
+
+
 </head>
 <body>
 <div id="app">
-    <div id="header">
-        <div class="inner">
-            <a class="logo" href="/"
-               hx-push-url="/"
-               hx-get="/views/home.html"
-               hx-swap="innerHTML"
-               hx-target="#content">
-                <img alt="" src="assets/images/logo.png"/>
-                <!-- <div class="trail"></div> -->
-            </a>
-
-            <nav>
-                <ul class="navigation">
-                    <li class="active">
-                        <a href="/"
-                           hx-push-url="/"
-                           hx-get="/views/home.html"
-                           hx-swap="innerHTML"
-                           hx-target="#content">
-                            <span>
-                              Home
-                            </span>
-                        </a>
-                    </li>
-                    <li class="active">
-                        <a href="/blog"
-                           hx-push-url="/blog"
-                           hx-get="/views/blog.html"
-                           hx-swap="innerHTML"
-                           hx-target="#content">
-                            <span>
-                                Blog
-                            </span>
-                        </a>
-                    </li>
-                    <li class="active">
-                        <a href="/projects"
-                           hx-push-url="/projects"
-                           hx-get="/views/projects.html"
-                           hx-swap="innerHTML"
-                           hx-target="#content">
-                            <span>
-                              Projects
-                            </span>
-                        </a>
-                    </li>
-                </ul>
-            </nav>
-        </div>
-    </div>
+    {{template "header" .}}
 
     <main id="content">
-        <div class="container">
-            <div id="intro-section" class="show">
-                <div class="hello newline show">Hello there.</div>
-                <div class="introduction show">
-                    <br />
-                    <p>
-                        My name is Tasos, and I am a Software Engineer based in
-                        Thessaloniki, Greece.<br />This is my home sweet home on the
-                        interwebs, where I share my projects, thoughts and experiments with
-                        the world.
-                    </p>
-                    <br />
-                    <p>
-                        In my free time I like coding small projects, contributing to the
-                        open source community and experimenting with new technologies. I
-                        also game (a lot, maybe too much!) and I make music mixes from time
-                        to time, among other things.
-                    </p>
-                </div>
-            </div>
-        </div>
+
+        {{ if eq .View "home" }}
+            {{ template "views/home" }}
+        {{else if eq .View "blog"}}
+            {{ template "views/blog" }}
+        {{else if eq .View "projects"}}
+            {{ template "views/projects" }}
+        {{ end }}
 
     </main>
 
-    <div id="footer">
-        <div class="container">
-            <div class="source tab">
-                <div class="header">
-                    Source
-                </div>
-                <div class="details">
-                    The source code of my website is available on
-                    <a
-                            class="link"
-                            href="https://github.com/rdnt/rdnt.dev"
-                            target="_blank"
-                    >GitHub</a
-                    >.
-                </div>
-            </div>
-            <div class="social tab">
-                <div class="header">
-                    Social
-                </div>
-                <div class="icons">
-                    <a
-                            class="link icon github"
-                            href="https://github.com/rdnt"
-                            target="_blank"
-                    ></a>
-                    <a
-                            class="link icon instagram"
-                            href="https://www.instagram.com/rdnt.dev/"
-                            target="_blank"
-                    ></a>
-                </div>
-            </div>
-        </div>
-    </div>
+    {{template "footer" .}}
 </div>
 </body>
-</html>
+</html>{{end}}
