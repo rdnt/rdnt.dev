@@ -5,10 +5,10 @@ import (
 	"fmt"
 	"html/template"
 	"log"
-	"math"
 	"net/http"
 	"os"
 	"path/filepath"
+	"strconv"
 	"strings"
 	"time"
 
@@ -22,14 +22,11 @@ type Blog struct {
 }
 
 type Pagination struct {
-	CurrentPage        int
-	TotalPages         int
-	PerPage            int
-	VisiblePages       []int
-	First              int
-	Last               int
-	MaxVisible         int
-	VisiblePagesMinus2 int
+	Page     int
+	PrevPage int
+	NextPage int
+	Total    int
+	Pages    []int
 }
 
 type Post struct {
@@ -130,7 +127,20 @@ func New() *Router {
 	r.Get("/projects", renderApp("projects"))
 
 	r.Get("/partials/home", renderPartial("views/home", nil))
-	r.Get("/partials/blog", func(writer http.ResponseWriter, request *http.Request) {
+	r.Get("/partials/blog", func(w http.ResponseWriter, r *http.Request) {
+		currentPage := 1
+		page := r.URL.Query().Get("page")
+		if page != "" {
+			pag, err := strconv.ParseInt(page, 10, 64)
+			if err != nil {
+				panic(err)
+			}
+
+			if pag > 0 {
+				currentPage = int(pag)
+			}
+		}
+
 		var posts []Post
 		for i := 0; i < 115; i++ {
 			posts = append(posts, Post{
@@ -144,20 +154,15 @@ func New() *Router {
 			})
 		}
 
-		currentPage := 4
 		perPage := 10
 
 		blog := Blog{
 			Posts: posts[currentPage*perPage : currentPage*perPage+10],
 			Pagination: Pagination{
-				CurrentPage:        currentPage,
-				TotalPages:         12,
-				PerPage:            perPage,
-				VisiblePages:       []int{},
-				VisiblePagesMinus2: 0,
-				First:              0,
-				Last:               0,
-				MaxVisible:         4, // divisible by 2
+				Page:     currentPage,
+				PrevPage: currentPage - 1,
+				NextPage: currentPage + 1,
+				Total:    12,
 			},
 		}
 
@@ -166,7 +171,7 @@ func New() *Router {
 		b, _ := json.Marshal(blog.Pagination)
 		fmt.Println(string(b))
 
-		renderPartial("views/blog", blog)(writer, request)
+		renderPartial("views/blog", blog)(w, r)
 	})
 	r.Get("/partials/projects", renderPartial("views/projects", nil))
 
@@ -177,25 +182,38 @@ func New() *Router {
 }
 
 func (p *Pagination) UpdatePagination() {
-	p.First = int(math.Max(
-		1,
-		math.Min(
-			float64(p.CurrentPage-p.MaxVisible/2),
-			float64(p.TotalPages-p.MaxVisible),
-		),
-	))
-	p.Last = int(math.Min(float64(p.First+p.MaxVisible), float64(p.TotalPages)))
+	curr := p.Page
 
-	p.VisiblePages = []int{}
-	for i := p.First; i <= p.Last; i++ {
-		p.VisiblePages = append(p.VisiblePages, i)
-	}
-	if p.First > 1 {
-		p.VisiblePages[0] = 1
-	}
-	if p.Last < p.TotalPages {
-		p.VisiblePages[len(p.VisiblePages)-1] = p.TotalPages
+	first := max(1, curr-3)
+	last := min(p.Total, curr+3)
+
+	for i := first; i <= last; i++ {
+		p.Pages = append(p.Pages, i)
 	}
 
-	p.VisiblePagesMinus2 = len(p.VisiblePages) - 2
+	for i := first - 1; i > max(last-7, 0); i-- {
+		p.Pages = append([]int{i}, p.Pages...)
+	}
+
+	for i := last + 1; i <= min(7, p.Total); i++ {
+		p.Pages = append(p.Pages, i)
+	}
+
+	if p.Pages[0] != 1 {
+		p.Pages[0] = 1
+	}
+
+	if p.Pages[len(p.Pages)-1] != p.Total {
+		p.Pages[len(p.Pages)-1] = p.Total
+	}
+
+	if len(p.Pages) > 1 {
+		if p.Pages[1] != 2 {
+			p.Pages[1] = 0
+		}
+
+		if p.Pages[len(p.Pages)-2] != p.Total-1 {
+			p.Pages[len(p.Pages)-2] = 0
+		}
+	}
 }

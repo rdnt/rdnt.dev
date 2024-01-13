@@ -21,24 +21,27 @@
                 {{end}}
 
                 {{$pagination := .Pagination}}
+
                 <div class="pagination hideTODO">
-                    {{if not (eq $pagination.CurrentPage 1)}}
-                        <span class="page"
-                              onclickTODO="getPage(currentPage - 1)">
-                            <button class="link icon arrow-left"></button>
-                        </span>
-                    {{ end }}
+                    <span class="page {{if (eq $pagination.Page 1)}}disabled{{end}}"
+                          onclickTODO="getPage(currentPage - 1)">
+                        <a class="link icon arrow-left"
+                           href="/blog?page={{ $pagination.PrevPage }}"
+                           hx-push-url="/blog?page={{ $pagination.PrevPage }}"
+                           hx-get="/partials/blog?page={{ $pagination.PrevPage }}"
+                           hx-swap="innerHTML show:window:top"
+                           hx-target="#content">
+                        </a>
+                    </span>
 
-
-                    {{range $_, $page := $pagination.VisiblePages}}
-                        {{if and (eq $page 1) (gt $pagination.First 1)}}
-                            <span class="spacer"> </span>
-                        {{end}}
-                        <span class="page"
-                              class="current disabled"
-                              classTODO="{ current: page === currentPage, disabled: totalPages <= 1 }"
-                              onclickTODO="getPage(page)">
-                            {{if and (eq $page $pagination.CurrentPage) false}}
+                    {{range $i, $page := $pagination.Pages}}
+                        {{if eq $page 0}}
+                            <span class="spacer"></span>
+                        {{else}}
+                            <span class="page {{if eq $page $pagination.Page}}current{{end}}"
+                                  classTODO="{ current: page === currentPage, disabled: totalPages <= 1 }"
+                                  onclickTODO="getPage(page)">
+                            {{if and (eq $page $pagination.Page) false}}
                                 <label>
                                     <input oninputTODO="pageInputKeydown"
                                            onchangeTODO="pageInputChange"
@@ -48,22 +51,32 @@
                                     }"/>
                                 </label>
                             {{ else }}
-                                <button class="link">
-                                    {{ $page }}
-                                </button>
-                            {{end}}
+                                <a class="link"
+                                   href="/blog?page={{ $page }}"
+                                   hx-push-url="/blog?page={{ $page }}"
+                                   hx-get="/partials/blog?page={{ $page }}"
+                                   hx-swap="innerHTML show:window:top"
+                                   hx-target="#content">
+                                    <span>
+                                        {{ $page }}
+                                    </span>
+                                </a>
+                            {{ end }}
                         </span>
-                        {{if and (eq $page $pagination.VisiblePagesMinus2) (lt $pagination.Last (len $pagination.VisiblePages))}}
-                            <span class="spacer"> </span>
                         {{end}}
                     {{end}}
 
-                    {{ if not (eq $pagination.CurrentPage (len $pagination.TotalPages))}}
-                        <span class="page"
-                              onclickTODO="getPage(currentPage + 1)">
-                            <button class="link icon arrow-right"></button>
-                        </span>
-                    {{end}}
+
+                    <span class="page {{if (eq $pagination.Page $pagination.Total)}}disabled{{end}}"
+                          onclickTODO="getPage(currentPage + 1)">
+                        <a class="link icon arrow-right"
+                           href="/blog?page={{ $pagination.NextPage }}"
+                           hx-push-url="/blog?page={{ $pagination.NextPage }}"
+                           hx-get="/partials/blog?page={{ $pagination.NextPage }}"
+                           hx-swap="innerHTML show:window:top"
+                           hx-target="#content">
+                        </a>
+                    </span>
                 </div>
             {{end}}
         </div>
