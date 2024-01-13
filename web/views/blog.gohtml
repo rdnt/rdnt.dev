@@ -1,5 +1,71 @@
 {{define "views/blog"}}
-<div class="container">
-    Blog
-</div>
+    <div class="container">
+        <div id="sidebar"></div>
+        <div id="blog-posts">
+
+            {{if not .Posts}}
+                <div class="not-found">
+                    No posts found.
+                </div>
+            {{else }}
+                {{range $post := .Posts}}
+                    <div class="post show">
+                        <div class="date">Posted {{ $post.CreatedAt }}</div>
+                        <a class="link title newline"
+                           href="/blog/{{ $post.Slug }}"
+                        >
+                            {{ $post.Title }}
+                        </a>
+                        <div class="description">{{ $post.Excerpt }}</div>
+                    </div>
+                {{end}}
+
+                {{$pagination := .Pagination}}
+                <div class="pagination hideTODO">
+                    {{if not (eq $pagination.CurrentPage 1)}}
+                        <span class="page"
+                              onclickTODO="getPage(currentPage - 1)">
+                            <button class="link icon arrow-left"></button>
+                        </span>
+                    {{ end }}
+
+
+                    {{range $_, $page := $pagination.VisiblePages}}
+                        {{if and (eq $page 1) (gt $pagination.First 1)}}
+                            <span class="spacer"> </span>
+                        {{end}}
+                        <span class="page"
+                              class="current disabled"
+                              classTODO="{ current: page === currentPage, disabled: totalPages <= 1 }"
+                              onclickTODO="getPage(page)">
+                            {{if and (eq $page $pagination.CurrentPage) false}}
+                                <label>
+                                    <input oninputTODO="pageInputKeydown"
+                                           onchangeTODO="pageInputChange"
+                                           disabledTODO="totalPages <= 1"
+                                           styleTODO="{
+                                      width: `calc(${pageInput.toString().length}ch)`
+                                    }"/>
+                                </label>
+                            {{ else }}
+                                <button class="link">
+                                    {{ $page }}
+                                </button>
+                            {{end}}
+                        </span>
+                        {{if and (eq $page $pagination.VisiblePagesMinus2) (lt $pagination.Last (len $pagination.VisiblePages))}}
+                            <span class="spacer"> </span>
+                        {{end}}
+                    {{end}}
+
+                    {{ if not (eq $pagination.CurrentPage (len $pagination.TotalPages))}}
+                        <span class="page"
+                              onclickTODO="getPage(currentPage + 1)">
+                            <button class="link icon arrow-right"></button>
+                        </span>
+                    {{end}}
+                </div>
+            {{end}}
+        </div>
+    </div>
 {{end}}
