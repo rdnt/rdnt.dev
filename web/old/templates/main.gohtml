@@ -1,4 +1,4 @@
-{{define "main"}}<!DOCTYPE html>
+{{define "templates/main"}}<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -483,15 +483,35 @@
 
     </style>
 
-    {{template "head"}}
+
+    {{ if eq .View "views/home" }}
+
+    {{else if eq .View "views/blog"}}
+        {{ template "partials/styles" }}
+    {{else if eq .View "views/projects"}}
+
+    {{ end }}
+
+
+
 </head>
 <body>
 <div id="app">
     {{template "header" .}}
+
     <main id="content">
-        {{template "body" .}}
+
+        {{ if eq .View "views/home" }}
+            {{ template "views/home" .Data }}
+        {{else if eq .View "views/blog"}}
+            {{ template "views/blog" .Data }}
+        {{else if eq .View "views/projects"}}
+            {{ template "views/projects" .Data }}
+        {{ end }}
+
     </main>
+
     {{template "footer" .}}
 </div>
 </body>
-</html>{{end}}
+    </html>{{end}}

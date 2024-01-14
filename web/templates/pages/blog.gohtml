@@ -1,0 +1,457 @@
+{{define "head" }}
+    <style data-component="blog">
+        #blog-posts {
+            padding: 80px 40px;
+        }
+        #blog-posts .not-found {
+            padding: 20px 0;
+        }
+        #blog-posts .post {
+            padding: 40px 0;
+            box-sizing: border-box;
+            opacity: 0;
+        }
+        #blog-posts .post.show {
+            transition: opacity 0.3s ease;
+            opacity: 1;
+        }
+        #blog-posts .post .title {
+            font-size: 2.2rem;
+            text-decoration: none;
+            border-radius: 2px;
+        }
+        #blog-posts .post .description {
+            font-size: 1.2rem;
+            color: #888896;
+        }
+        #blog-posts .post .date {
+            font-size: 1rem;
+            color: #7a7b8a;
+            opacity: 0.75;
+        }
+        #blog-post {
+            padding: 110px 40px;
+            opacity: 0;
+        }
+        #blog-post.show {
+            transition: opacity 0.3s ease;
+            opacity: 1;
+        }
+        #blog-post .date {
+            font-size: 0.9rem;
+            height: 30px;
+            line-height: 30px;
+            color: #7a7b8a;
+        }
+        #blog-post .title {
+            font-size: 3rem;
+            color: #ccd1dd;
+            display: inline-block;
+        }
+        #blog-post .content {
+            margin-top: 40px;
+        }
+        #blog-post .post-links {
+            width: 100%;
+            height: 90px;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            margin-top: 80px;
+        }
+        #blog-post .post-links .post-link {
+            position: relative;
+            width: calc(50% - 10px);
+            height: 90px;
+            background-color: rgba(68, 74, 85, .2);
+            padding: 24px;
+            box-sizing: border-box;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: 2px;
+            flex-grow: 0;
+        }
+        #blog-post .post-links .post-link:before, #blog-post .post-links .post-link:after {
+            box-shadow: 2px 2px #494d60;
+            transition: box-shadow 0.2s ease;
+        }
+        #blog-post .post-links .post-link:hover:before, #blog-post .post-links .post-link:hover:after {
+            box-shadow: 2px 2px rgba(32, 233, 183, .75);
+        }
+        #blog-post .post-links .post-link:active:before, #blog-post .post-links .post-link:active:after {
+            box-shadow: 2px 2px rgba(32, 233, 183, .5);
+        }
+        #blog-post .post-links .post-link .post-link-content {
+            display: flex;
+            flex-direction: column;
+            max-width: calc(100% - 100px);
+        }
+        #blog-post .post-links .post-link .post-link-content .post-link-label {
+            text-transform: uppercase;
+            opacity: 0.5;
+            font-size: 0.8rem;
+        }
+        #blog-post .post-links .post-link .post-link-content .post-link-title {
+            display: block;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        #blog-post .post-links .post-link.prev {
+            text-align: right;
+        }
+        #blog-post .post-links .post-link.prev:before {
+            content: "";
+            display: block;
+            height: 20px;
+            width: 20px;
+            transform: rotate(135deg);
+            margin-left: 16px;
+        }
+        #blog-post .post-links .post-link.next {
+            margin-left: auto;
+        }
+        #blog-post .post-links .post-link.next:after {
+            content: "";
+            display: block;
+            height: 20px;
+            width: 20px;
+            transform: rotate(-45deg);
+            margin-right: 16px;
+        }
+        .markdown a {
+            padding: 4px;
+            margin: -4px;
+        }
+        .markdown h1 {
+            font-size: 2.4rem;
+            margin: 30px 0;
+        }
+        .markdown h2 {
+            font-size: 2rem;
+            margin: 26px 0;
+        }
+        .markdown h3 {
+            font-size: 1.6rem;
+            margin: 22px 0;
+        }
+        .markdown h4 {
+            font-size: 1.4rem;
+            margin: 18px 0;
+        }
+        .markdown h5 {
+            font-size: 1.25rem;
+            margin: 14px 0;
+        }
+        .markdown h6 {
+            font-size: 1.2rem;
+            margin: 12px 0;
+        }
+        .markdown p {
+            color: #7a7b8a;
+            margin-bottom: 1.5rem;
+        }
+        .markdown hr {
+            margin: 40px 0;
+            border: none;
+            border-top: 2px dashed #4b5362;
+            background: none;
+        }
+        .markdown strong {
+            font-weight: bold;
+        }
+        .markdown em {
+            font-style: italic;
+        }
+        .markdown blockquote {
+            position: relative;
+            margin: 30px 0;
+            box-shadow: inset 4px 0 0 0 rgba(122, 123, 138, 25);
+            padding-left: 30px;
+        }
+        .markdown blockquote:after {
+            content: attr(data-author);
+            position: relative;
+            left: -30px;
+            font-size: 0.8rem;
+        }
+        .markdown blockquote * {
+            color: #62636f;
+        }
+        .markdown blockquote a {
+            color: #abb6cb;
+        }
+        .markdown ul, .markdown ol {
+            display: block;
+            padding-inline-start: 30px;
+            margin: 20px 0;
+        }
+        .markdown ul ul, .markdown ol ul, .markdown ul ol, .markdown ol ol {
+            margin: 0;
+        }
+        .markdown li {
+            margin-left: 30px;
+        }
+        .markdown ul li {
+            list-style-type: disc;
+        }
+        .markdown ul li li {
+            list-style-type: circle;
+        }
+        .markdown ul li li li {
+            list-style-type: square;
+        }
+        .markdown ol li {
+            list-style-type: decimal;
+        }
+        .markdown ol li li {
+            list-style-type: decimal;
+        }
+        .markdown img {
+            width: 100px;
+            height: 100px;
+        }
+        .markdown table {
+            border-collapse: collapse;
+            margin: 30px 0;
+        }
+        .markdown table tr, .markdown table td, .markdown table th {
+            padding: 10px 15px;
+        }
+        .markdown table td, .markdown table th {
+            border: 1px solid #333643;
+        }
+        .markdown code {
+            background: rgba(51, 54, 67, .5);
+            padding: 2px 4px;
+            margin: -2px;
+            border-radius: 2px;
+            color: #818290;
+        }
+        .markdown pre {
+            background: rgba(122, 123, 138, 10);
+            padding: 14px 20px;
+            border-radius: 2px;
+            margin: 30px 0;
+        }
+        .markdown pre code {
+            background: transparent;
+            color: #7a7b8a;
+        }
+
+    </style>
+
+    <style data-component="pagination">
+        .pagination {
+            user-select: none;
+            display: flex;
+            height: 40px;
+            padding: 30px 0 120px;
+            flex-wrap: nowrap;
+            flex-direction: row;
+            justify-content: center;
+        }
+        .pagination.hide {
+            opacity: 0;
+            pointer-events: none;
+        }
+        .pagination .spacer {
+            font-size: 1.1rem;
+            /*margin: 18px 0;*/
+            width: 2ch;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 1ch;
+            margin: 0 0.5ch;
+            /*height: 2px;*/
+            /*width: 40px;*/
+            /*background-color: #7a7b8a;*/
+        }
+        .pagination .spacer:after {
+            content: '…';
+            display: inline;
+            position: relative;
+            top: 0;
+            left: 0;
+            padding: 0 1ch;
+            width: 2ch;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            /*height: 2px;*/
+        }
+        .pagination .page {
+            display: block;
+            height: 40px;
+            font-size: 1.1rem;
+            margin: 0 .5ch;
+            padding: 0 1ch;
+            cursor: pointer;
+            width: 2ch;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .pagination .page.disabled {
+            pointer-events: none;
+            opacity: 0.5;
+        }
+        .pagination .page .icon {
+            min-width: 3ch;
+            font-size: 1.1rem;
+            font-family: 'Hack', monospace;
+            padding: 0;
+        }
+        .pagination .page .icon:before {
+            font-size: 1rem;
+            line-height: 40px;
+            width: 100%;
+            padding: 0;
+            text-align: center;
+        }
+        .pagination .page.current {
+            position: relative;
+            color: #20e9b7;
+            display: flex;
+            align-items: center;
+            /*padding: 0;*/
+            min-width: auto;
+            border-radius: 3px;
+            /*border: 2px dashed #444;*/
+            border: 2px solid #61636f;
+        }
+        .pagination .page.current.disabled:after {
+            content: none;
+        }
+        .pagination .page.current:after {
+            /*content: '';*/
+            display: block;
+            position: absolute;
+            bottom: 6px;
+            left: 1ch;
+            width: calc(100% - 2ch);
+            height: 0;
+            border-bottom: 2px dashed #444;
+            pointer-events: none;
+        }
+        .pagination .page.current input {
+            display: block;
+            background: transparent;
+            padding: 0 1ch;
+            width: auto;
+            min-width: 1ch;
+            height: 40px;
+            line-height: 40px;
+            border: none;
+            font-size: 1.1rem;
+            /*color: #20e9b7;*/
+            text-align: center;
+            transition: color 0.3s ease;
+        }
+        .pagination .page.current input:focus {
+            /*color: #dadfe8;*/
+            background: transparent !important;
+        }
+        .pagination .page.current input:disabled {
+            pointer-events: none;
+        }
+        .pagination .page button {
+            font-size: 1.1rem;
+            display: block;
+            height: 40px;
+            margin: 0;
+            padding: 0 1ch;
+            border: none;
+            cursor: pointer;
+        }
+        .pagination .page .arrow.left {
+            transform: rotate(180deg);
+        }
+    </style>
+{{end}}
+{{define "body"}}
+    <div class="container">
+        <div id="sidebar"></div>
+        <div id="blog-posts">
+
+            {{if not .Posts}}
+                <div class="not-found">
+                    No posts found.
+                </div>
+            {{else }}
+                {{range $post := .Posts}}
+                    <div class="post show">
+                        <div class="date">Posted {{ $post.CreatedAt }}</div>
+                        <a class="link title newline"
+                           href="/blog/{{ $post.Slug }}"
+                        >
+                            {{ $post.Title }}
+                        </a>
+                        <div class="description">{{ $post.Excerpt }}</div>
+                    </div>
+                {{end}}
+
+                {{$pagination := .Pagination}}
+
+                <div class="pagination hideTODO">
+                    <span class="page {{if (eq $pagination.Page 1)}}disabled{{end}}"
+                          onclickTODO="getPage(currentPage - 1)">
+                        <a class="link icon arrow-left"
+                           href="/blog?page={{ $pagination.PrevPage }}"
+                           hx-push-url="/blog?page={{ $pagination.PrevPage }}"
+                           hx-get="/partials/blog?page={{ $pagination.PrevPage }}"
+                           hx-swap="innerHTML show:window:top"
+                           hx-target="#content">
+                        </a>
+                    </span>
+
+                    {{range $i, $page := $pagination.Pages}}
+                        {{if eq $page 0}}
+                            <span class="spacer"></span>
+                        {{else}}
+                            <span class="page {{if eq $page $pagination.Page}}current{{end}}"
+                                  classTODO="{ current: page === currentPage, disabled: totalPages <= 1 }"
+                                  onclickTODO="getPage(page)">
+                            {{if and (eq $page $pagination.Page) false}}
+                                <label>
+                                    <input oninputTODO="pageInputKeydown"
+                                           onchangeTODO="pageInputChange"
+                                           disabledTODO="totalPages <= 1"
+                                           styleTODO="{
+                                      width: `calc(${pageInput.toString().length}ch)`
+                                    }"/>
+                                </label>
+                            {{ else }}
+                                <a class="link"
+                                   href="/blog?page={{ $page }}"
+                                   hx-push-url="{{if eq $page $pagination.Page}}false{{else}}/blog?page={{ $page }}{{end}}"
+                                   hx-get="/partials/blog?page={{ $page }}"
+                                   hx-swap="innerHTML show:window:top"
+                                   hx-target="#content">
+                                    <span>
+                                        {{ $page }}
+                                    </span>
+                                </a>
+                            {{ end }}
+                        </span>
+                        {{end}}
+                    {{end}}
+
+
+                    <span class="page {{if (eq $pagination.Page $pagination.Total)}}disabled{{end}}"
+                          onclickTODO="getPage(currentPage + 1)">
+                        <a class="link icon arrow-right"
+                           href="/blog?page={{ $pagination.NextPage }}"
+                           hx-push-url="/blog?page={{ $pagination.NextPage }}"
+                           hx-get="/partials/blog?page={{ $pagination.NextPage }}"
+                           hx-swap="innerHTML show:window:top"
+                           hx-target="#content">
+                        </a>
+                    </span>
+                </div>
+            {{end}}
+        </div>
+    </div>
+{{end}}
